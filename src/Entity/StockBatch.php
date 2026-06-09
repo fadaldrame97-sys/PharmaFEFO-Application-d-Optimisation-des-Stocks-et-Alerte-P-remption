@@ -27,6 +27,46 @@ class StockBatch
         $this->status = $status;
     }
 
+     public function getId(): int
+    {
+        return $this->id;
+    }
+
+    public function getProductId(): int
+    {
+        return $this->productId;
+    }
+
+    public function getLotNumber(): string
+    {
+        return $this->lotNumber;
+    }
+
+    public function getQuantity(): int
+    {
+        return $this->quantity;
+    }
+
+    public function getExpirationDate(): DateTime
+    {
+        return $this->expirationDate;
+    }
+
+    public function getStatus(): string
+    {
+        return $this->status;
+    }
+
+    public function setQuantity(int $quantity): void
+    {
+        $this->quantity = $quantity;
+    }
+
+    public function setStatus(string $status): void
+    {
+        $this->status = $status;
+    }
+
 
 
 
