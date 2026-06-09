@@ -20,6 +20,40 @@ class Product
         $this->code = $code;
         $this->description = $description;
     }
+     public function getId(): int
+    {
+        return $this->id;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function getCode(): string
+    {
+        return $this->code;
+    }
+
+    public function getDescription(): string
+    {
+        return $this->description;
+    }
+
+    public function setName(string $name): void
+    {
+        $this->name = $name;
+    }
+
+    public function setCode(string $code): void
+    {
+        $this->code = $code;
+    }
+
+    public function setDescription(string $description): void
+    {
+        $this->description = $description;
+    }
 
 
 }
