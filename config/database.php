@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 class Database{
-    private static? PDO $pdo=null;
+    private static? PDO $pdo = null;
 
     public static function getConnection() : PDO {
         if(self::$pdo===null){
