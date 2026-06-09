@@ -10,5 +10,18 @@ class User
     private string $role;
 
 
+    public function __construct(
+        int $id,
+        string $email,
+        string $password,
+        string $role
+    ) {
+        $this->id = $id;
+        $this->email = $email;
+        $this->password = $password;
+        $this->role = $role;
+    }
+
+
 
 }
