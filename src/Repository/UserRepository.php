@@ -17,6 +17,11 @@ class UserRepository {
 
     }
     public function findById(int $id): ?User {
+        $query=" SELECT * FROM Users WERE id=:id";
+        $statement=$this->pdo->prepare($query);
+        $statement->execute(['id'=>$id]);
+        $user=$statement->fetchObject(User::class);
+        return $user;
 
     }
 
