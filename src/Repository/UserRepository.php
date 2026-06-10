@@ -9,7 +9,7 @@ class UserRepository {
     }
 
     public function findByEmail(string $email): ?User {
-        $query="SELECT * FROM Users WERE email=:email";
+        $query="SELECT * FROM users WHERE email=:email";
         $statement=$this->pdo->prepare($query);
         $statement->execute(['email'=>$email]);
         $user=$statement->fetchObject(User::class);
@@ -17,7 +17,7 @@ class UserRepository {
 
     }
     public function findById(int $id): ?User {
-        $query=" SELECT * FROM Users WERE id=:id";
+        $query=" SELECT * FROM users WHERE id=:id";
         $statement=$this->pdo->prepare($query);
         $statement->execute(['id'=>$id]);
         $user=$statement->fetchObject(User::class);
