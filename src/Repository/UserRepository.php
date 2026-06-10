@@ -9,10 +9,15 @@ class UserRepository {
     }
 
     public function findByEmail(string $email): ?User {
+        $query="SELECT * FROM Users WERE email=:email";
+        $statement=$this->pdo->prepare($query);
+        $statement->execute(['email'=>$email]);
+        $user=$statement->fetchObject(User::class);
+        return $user;
 
     }
-     public function findById(int $id): ?User {
-        
-     }
+    public function findById(int $id): ?User {
+
+    }
 
 }
