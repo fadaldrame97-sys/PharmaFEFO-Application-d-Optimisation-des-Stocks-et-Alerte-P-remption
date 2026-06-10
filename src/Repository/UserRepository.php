@@ -2,4 +2,9 @@
 
 class UserRepository {
     private PDO $pdo;
+
+    public function __construct()
+    {
+        $this->pdo=Database::getConnection();
+    }
 }
