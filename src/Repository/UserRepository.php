@@ -7,4 +7,8 @@ class UserRepository {
     {
         $this->pdo=Database::getConnection();
     }
+
+    public function findByEmail(string $email): ?User {
+        
+    }
 }
