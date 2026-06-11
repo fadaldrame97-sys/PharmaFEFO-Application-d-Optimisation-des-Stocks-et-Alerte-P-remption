@@ -67,6 +67,26 @@ class StockController
 
     }
 
+    public function index(): void
+{
+    if (!isset($_SESSION['user'])) {
+        header('Location: /login');
+        exit;
+    }
+
+    $role = $_SESSION['user']['role'];
+    $batches = $this->stockBatchRepository->findAll();
+
+    if ($role === 'ADMIN' || $role === 'GESTIONNAIRE') {
+        require __DIR__ . '/../templates/stock/index.php'; // Vue avec actions
+    } elseif ($role === 'PHARMACIEN') {
+        require __DIR__ . '/../templates/stock/read_only.php'; // Vue lecture seule
+    } else {
+        die("Accès interdit.");
+    }
+}
+
+
     }
 
 
