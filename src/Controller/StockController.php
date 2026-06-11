@@ -65,10 +65,9 @@ class StockController
         $batches = $this->stockBatchRepository->findAll();
         require __DIR__ . '/../templates/stock/index.php';
 
-    }
+    
 
-    public function index(): void
-{
+    
     if (!isset($_SESSION['user'])) {
         header('Location: /login');
         exit;
@@ -84,7 +83,39 @@ class StockController
     } else {
         die("Accès interdit.");
     }
-}
+    }
+
+
+    public function scanEntry(): void
+{
+    if (!isset($_SESSION['user'])) {
+        header('Location: /login');
+        exit;
+    }
+
+    $role = $_SESSION['user']['role'];
+
+    if ($role !== 'ADMIN' && $role !== 'GESTIONNAIRE' && $role !== 'PREPARATEUR') {
+        die("Accès interdit.");
+    }
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $productId = $_POST['product_id'];
+        $lotNumber = $_POST['lot_number'];
+        $quantity = $_POST['quantity'];
+        $expirationDate = new DateTime($_POST['expiration_date']);
+
+        $batch = new StockBatch($productId, $lotNumber, $quantity, $expirationDate);
+        $this->stockBatchRepository->save($batch);
+
+        $_SESSION['success'] = "Lot enregistré avec succès.";
+        header('Location: /stock');
+        exit;
+    }
+
+    require __DIR__ . '/../templates/stock/scan.php';
+    }
+
 
 
     }

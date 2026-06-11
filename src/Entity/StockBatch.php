@@ -12,20 +12,19 @@ class StockBatch
     private string $status;
 
     public function __construct(
-        int $id,
-        int $productId,
-        string $lotNumber,
-        int $quantity,
-        DateTime $expirationDate,
-        string $status
-    ) {
-        $this->id = $id;
-        $this->productId = $productId;
-        $this->lotNumber = $lotNumber;
-        $this->quantity = $quantity;
-        $this->expirationDate = $expirationDate;
-        $this->status = $status;
-    }
+    int $productId,
+    string $lotNumber,
+    int $quantity,
+    DateTime $expirationDate,
+    string $status = 'AVAILABLE'
+) {
+    $this->productId = $productId;
+    $this->lotNumber = $lotNumber;
+    $this->quantity = $quantity;
+    $this->expirationDate = $expirationDate;
+    $this->status = $status;
+}
+
 
      public function getId(): int
     {
