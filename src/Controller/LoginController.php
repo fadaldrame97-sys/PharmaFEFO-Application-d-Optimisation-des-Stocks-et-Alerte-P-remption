@@ -11,7 +11,7 @@ class LoginController{
 
   
     public function showLoginForm(): void{
-        require __DIR__ . '/.../templates/login.php';
+        require __DIR__ . '/../templates/login.php';
     }
 
 
