@@ -65,6 +65,15 @@ class ProductRepository
     }
 
 
+    public function delete(int $id): bool{
+        $query = " DELETE FROM products WHERE id = :id";
+        $statement = $this->pdo->prepare($query);
+
+        return $statement->execute(['id' => $id]);
+    }
+
+
+
 
 
 
