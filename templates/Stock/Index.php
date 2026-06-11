@@ -27,3 +27,32 @@
                 <th class="border px-4 py-2 text-left">Actions</th>
             </tr>
         </thead>
+
+         <tbody>
+        <?php foreach ($batches as $batch): ?>
+            <tr class="hover:bg-gray-50">
+                <td class="border px-4 py-2"><?= $batch->getId(); ?></td>
+                <td class="border px-4 py-2"><?= $batch->getProductId(); ?></td>
+                <td class="border px-4 py-2"><?= $batch->getLotNumber(); ?></td>
+                <td class="border px-4 py-2"><?= $batch->getQuantity(); ?></td>
+                <td class="border px-4 py-2"><?= $batch->getExpirationDate()->format('Y-m-d'); ?></td>
+                <td class="border px-4 py-2">
+                     <?php if ($batch->getStatus() === 'EXPIRED'): ?>
+                    <span class="bg-red-500 text-white px-2 py-1 rounded">EXPIRÉ</span>
+                    <?php else: ?>
+                        <span class="bg-green-500 text-white px-2 py-1 rounded"><?= $batch->getStatus(); ?></span>
+                    <?php endif; ?>
+
+                    </td>
+                <td class="border px-4 py-2">
+                    <a href="/stock/dispense?product=<?= $batch->getProductId(); ?>" 
+                       class="text-blue-600 hover:underline">Dispense</a> |
+                    <a href="/stock/expire?batch=<?= $batch->getId(); ?>" 
+                       class="text-red-600 hover:underline">Marquer expiré</a>
+                </td>
+            </tr>
+
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+</div>

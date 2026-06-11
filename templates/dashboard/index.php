@@ -4,9 +4,23 @@ function getCriticityClass(DateTime $expiry): string {
     $interval = $now->diff($expiry)->days;
     if ($interval <= 30) return 'bg-red-500 text-white';   // Rouge
     if ($interval <= 90) return 'bg-yellow-400 text-black'; // Jaune/Orange
-    return 'bg-green-500 text-white';                      // Vert
-}
-?>
+    return 'bg-green-500 text-white';  
+    
+    // Vert
+
+    if (!isset($_SESSION['user'])) {
+    header('Location: /login');
+    exit;
+    }
+
+    $role = $_SESSION['user']['role'];
+
+    if ($role !== 'ADMIN' && $role !== 'PHARMACIEN') {
+    die("Accès interdit à cette vue.");
+    }
+
+   }
+   ?>
 
 <!DOCTYPE html>
 <html lang="fr">
