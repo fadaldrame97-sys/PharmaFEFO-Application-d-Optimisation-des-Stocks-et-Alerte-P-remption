@@ -60,5 +60,12 @@ class StockBatchRepository
     
     }
 
+    public function findExpiringNextMonth(): array{
+        
+    }
+
+
+
+
 
 }
