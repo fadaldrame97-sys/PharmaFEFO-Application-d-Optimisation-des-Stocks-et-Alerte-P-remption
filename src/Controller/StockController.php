@@ -16,6 +16,14 @@ class StockController
         session_start();
     }
 
+     public function dispenseProduct(int $productId): void
+    {
+        if (!isset($_SESSION['user'])) {
+            header('Location: /login');
+            exit;
+        }
+
+
     
 
     }
