@@ -36,13 +36,23 @@ class ProductRepository
 
     public function findAll(): array{
 
-    $query = "SELECT * FROM products ORDER BY name ASC";
-    $statement = $this->pdo->query($query);
+        $query = "SELECT * FROM products ORDER BY name ASC";
+        $statement = $this->pdo->query($query);
 
-    $products = $statement->fetchAll(PDO::FETCH_CLASS, Product::class);
+        $products = $statement->fetchAll(PDO::FETCH_CLASS, Product::class);
 
-    return $products ?: [];
+        return $products ?: [];
     }
+
+    public function create(Product $product): bool{
+        $query = "INSERT INTO products (name, code, description) VALUES (:name, :code, :description)";
+        $statement = $this->pdo->prepare($query);
+        return $statement->execute(['name'=> $product->getName(),'code'=> $product->getCode(),
+                                   'description' => $product->getDescription()]);
+        }
+
+
+
 
 
 
