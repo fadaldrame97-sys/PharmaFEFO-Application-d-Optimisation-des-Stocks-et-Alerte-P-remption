@@ -63,7 +63,8 @@ class StockController
         }
 
         $batches = $this->stockBatchRepository->findAll();
-        require _DIR_ . '/../templates/stock/index.php';
+        require __DIR__ . '/../templates/stock/index.php';
+
     }
 
     }

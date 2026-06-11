@@ -19,6 +19,12 @@ class StockBatchRepository
                                     'status'=>$stockBatch->getStatus()]);                   
         
     }
+    public function findAll(): array {
+      $query = "SELECT * FROM stock_batches ORDER BY expiration_date ASC";
+      $statement = $this->pdo->query($query);
+      return $statement->fetchAll(PDO::FETCH_CLASS, StockBatch::class) ?: [];
+    }
+
 
 
     public function findById(int $id): ?StockBatch{
