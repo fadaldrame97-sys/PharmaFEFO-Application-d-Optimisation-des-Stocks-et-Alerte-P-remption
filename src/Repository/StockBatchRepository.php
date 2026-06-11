@@ -136,6 +136,21 @@ class StockBatchRepository
     return $batches;
     }
 
+    public function findByCriticality(): array {
+    $query = "SELECT *, 
+              CASE 
+                WHEN expiration_date <= DATE_ADD(CURDATE(), INTERVAL 30 DAY) THEN 'CRITICAL'
+                WHEN expiration_date <= DATE_ADD(CURDATE(), INTERVAL 90 DAY) THEN 'WARNING'
+                ELSE 'OK'
+              END AS criticity
+              FROM stock_batches
+              WHERE status <> 'EXPIRED'
+              ORDER BY expiration_date ASC";
+    $statement = $this->pdo->query($query);
+    return $statement->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
 
 
 
