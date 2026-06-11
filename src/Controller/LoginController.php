@@ -28,7 +28,7 @@ class LoginController{
             $_SESSION['user'] = [
                 'id'    => $user->getId(),
                 'email' => $user->getEmail(),
-                'role'  => $user->getRole()->value
+                'role'  => $user->getRole()
             ];
 
             // Redirection vers le dashboard
