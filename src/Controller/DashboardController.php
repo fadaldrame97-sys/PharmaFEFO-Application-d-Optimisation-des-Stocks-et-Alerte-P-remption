@@ -21,6 +21,8 @@ class DashboardController
         $expiringSoon = $this->stockBatchRepository->findExpiringNextMonth();
         $expired      = $this->stockBatchRepository->findExpiredBatches();
         $allBatches   = $this->stockBatchRepository->findAll(); 
+
+        require __DIR__ . '/../templates/dashboard/index.php';
     }
     
 
