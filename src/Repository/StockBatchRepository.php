@@ -85,6 +85,23 @@ class StockBatchRepository
     }
 
 
+    public function markAsExpired(int $id): bool{
+         $query = "
+                 UPDATE stock_batches
+                 SET status = 'EXPIRED',
+                 quantity = 0
+                 WHERE id = :id
+                 ";
+
+        $statement = $this->pdo->prepare($query);
+
+        return $statement->execute(['id' => $id ]);
+
+
+
+    }
+
+
 
 
 
