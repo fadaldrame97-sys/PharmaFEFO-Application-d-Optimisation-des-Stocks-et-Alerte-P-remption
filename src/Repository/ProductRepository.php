@@ -52,6 +52,20 @@ class ProductRepository
         }
 
 
+    public function update(Product $product): bool{
+        $query = "UPDATE products SET name = :name, code = :code, description = :description WHERE id = :id";
+        $statement = $this->pdo->prepare($query);
+
+        return $statement->execute([
+        'id'          => $product->getId(),
+        'name'        => $product->getName(),
+        'code'        => $product->getCode(),
+        'description' => $product->getDescription()
+        ]);
+    }
+
+
+
 
 
 
