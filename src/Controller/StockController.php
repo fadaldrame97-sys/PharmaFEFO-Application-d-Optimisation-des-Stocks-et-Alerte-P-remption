@@ -22,8 +22,29 @@ class StockController
             header('Location: /login');
             exit;
         }
+               $batch = $this->stockBatchRepository->findBatchByFEFO($productId);
+
+        if ($batch) {
+            $newQuantity = $batch->getQuantity() - 1;
+
+            if ($newQuantity >= 0) {
+                $this->stockBatchRepository->updateQuantity($batch->getId(), $newQuantity);
+                $_SESSION['success'] = "Dispensation réussie : lot {$batch->getLotNumber()} décrémenté.";
+            } else {
+                $_SESSION['error'] = "Stock insuffisant pour ce lot.";
+            }
+        } else {
+            $_SESSION['error'] = "Aucun lot disponible pour ce produit.";
+        }
+
+        header('Location: /dashboard');
+        exit;
+    }
+
+    }
 
 
+    
     
 
     }
