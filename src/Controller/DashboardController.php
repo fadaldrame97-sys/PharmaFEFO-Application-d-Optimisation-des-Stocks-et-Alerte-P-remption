@@ -17,6 +17,10 @@ class DashboardController
             header('Location: /login');
             exit;
         }
+
+        $expiringSoon = $this->stockBatchRepository->findExpiringNextMonth();
+        $expired      = $this->stockBatchRepository->findExpiredBatches();
+        $allBatches   = $this->stockBatchRepository->findAll(); 
     }
     
 
