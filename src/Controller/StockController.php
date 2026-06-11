@@ -41,10 +41,24 @@ class StockController
         exit;
     }
 
+
+    public function markExpired(int $batchId): void
+    {
+        if (!isset($_SESSION['user'])) {
+            header('Location: /login');
+            exit;
+        }
+
+        $this->stockBatchRepository->markAsExpired($batchId);
+        $_SESSION['success'] = "Lot $batchId marqué comme expiré.";
+        header('Location: /dashboard');
+        exit;
+    }
+
     }
 
 
     
     
 
-    }
+    
