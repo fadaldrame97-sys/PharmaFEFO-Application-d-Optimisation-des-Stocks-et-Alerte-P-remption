@@ -7,3 +7,8 @@
         <?= htmlspecialchars($_SESSION['success']); ?>
     </div>
 <?php unset($_SESSION['success']); endif; ?>
+<?php if (isset($_SESSION['error'])): ?>
+    <div class="alert alert-danger">
+        <?= htmlspecialchars($_SESSION['error']); ?>
+    </div>
+<?php unset($_SESSION['error']); endif; ?>
