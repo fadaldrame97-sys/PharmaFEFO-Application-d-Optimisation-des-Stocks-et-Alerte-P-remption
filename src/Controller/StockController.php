@@ -55,6 +55,17 @@ class StockController
         exit;
     }
 
+     public function index(): void
+    {
+        if (!isset($_SESSION['user'])) {
+            header('Location: /login');
+            exit;
+        }
+
+        $batches = $this->stockBatchRepository->findAll();
+        require _DIR_ . '/../templates/stock/index.php';
+    }
+
     }
 
 
