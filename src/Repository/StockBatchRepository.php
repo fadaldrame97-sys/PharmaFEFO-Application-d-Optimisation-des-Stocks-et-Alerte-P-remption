@@ -15,14 +15,14 @@ class StockBatchRepository
         return $statement->execute(['product_id'=>$stockBatch->getProductId(),
                                     'lot_number'=>$stockBatch->getLotNumber(),
                                     'quantity'=>$stockBatch->getQuantity(),
-                                    'expriration_date'=>$stockBatch->getExpirationDate(), 
+                                    'expiration_date'=>$stockBatch->getExpirationDate(), 
                                     'status'=>$stockBatch->getStatus()]);                   
         
     }
 
 
     public function findById(int $id): ?StockBatch{
-        $query=" SELECT * FROM products WHERE id=:id";
+        $query=" SELECT * FROM stock_batches WHERE id=:id";
         $statement=$this->pdo->prepare($query);
 
         if(!$statement)return null;
@@ -36,10 +36,10 @@ class StockBatchRepository
     }
     public function getNextExpiringBatch(int $productId){
         $query=" SELECT * FROM stock_batches
-                 WHERE product_id=:product
+                 WHERE product_id = :product_id
                  AND quantity > 0
-                 AND statut <> 'EXPIRED'
-                 GROUP BY expiration_date ASC
+                 AND status <> 'EXPIRED'
+                 ORDER BY expiration_date ASC
                  LIMIT 1";
         $statement=$this->pdo->prepare($query);
 
@@ -53,7 +53,7 @@ class StockBatchRepository
         $query=" SELECT * FROM stock_batches
         WHERE status=:status";
         $statement=$this->pdo->prepare($query);
-        $statement->execute(['stutus'=>$status]);
+        $statement->execute(['status' => $status->value]);
         $line=$statement->fetchAll(PDO::FETCH_CLASS, StockBatch::class);
 
         return $line;
@@ -62,10 +62,10 @@ class StockBatchRepository
 
     public function findExpiringNextMonth(): array{
         $query=" SELECT * FROM stock_batches
-                WHERE expiration_date BETWEEN CURDATE() AND DATE_ADD(CURDATE, INTERVAL 1 MONTH)
+                WHERE expiration_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 1 MONTH)
                  AND quantity > 0
-                 AND statut <> 'EXPIRED'
-                GROUP BY expiration_date ASC";
+                 AND status <> 'EXPIRED'
+                ORDER BY expiration_date ASC";
         $statement=$this->pdo->prepare($query);
         if(!$statement) return [];
         $statement->execute();
