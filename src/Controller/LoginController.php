@@ -47,6 +47,8 @@ class LoginController{
             header('Location: /login');
             exit;
         }
+
+        
     }
 
         public function logout(): void {
@@ -54,10 +56,6 @@ class LoginController{
         header('Location: /login');
         exit;
     }
-
-    
-    
-
-    
+   
 }
 
