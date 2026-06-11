@@ -7,4 +7,8 @@ class StockBatchRepository
     {
         $this->pdo = Database::getConnection();
     }
+
+    public function create(StockBatch $stockBatch):bool{
+        $query="";
+    }
 }
