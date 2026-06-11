@@ -13,7 +13,10 @@ class DashboardController
     }
 
     public function index(): void{
-        
+        if (!isset($_SESSION['user'])) {
+            header('Location: /login');
+            exit;
+        }
     }
     
 
