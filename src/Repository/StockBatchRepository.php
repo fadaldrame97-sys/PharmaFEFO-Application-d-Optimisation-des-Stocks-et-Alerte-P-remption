@@ -61,6 +61,18 @@ class StockBatchRepository
     }
 
     public function findExpiringNextMonth(): array{
+        $query=" SELECT * FROM stock_batches
+                WHERE expiration_date BETWEEN CURDATE() AND DATE_ADD(CURDATE, INTERVAL 1 MONTH)
+                 AND quantity > 0
+                 AND statut <> 'EXPIRED'
+                GROUP BY expiration_date ASC";
+        $statement=$this->pdo->prepare($query);
+        if(!$statement) return [];
+        $statement->execute();
+        $batches = $statement->fetchAll(PDO::FETCH_CLASS, StockBatch::class);
+
+         return $batches ?: [];
+    
         
     }
 
