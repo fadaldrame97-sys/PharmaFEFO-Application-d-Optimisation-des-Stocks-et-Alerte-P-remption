@@ -19,4 +19,7 @@ class StockBatchRepository
                                     'status'=>$stockBatch->getStatus()]);                   
         
     }
+    public function getNextExpiringBatch(int $productId){}
+
+    
 }
