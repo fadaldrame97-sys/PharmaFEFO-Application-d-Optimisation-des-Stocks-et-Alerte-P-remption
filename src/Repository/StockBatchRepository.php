@@ -49,5 +49,16 @@ class StockBatchRepository
         return $table ?: null;
     }
 
+    public function findByStatus(BatchStatus $status): array{
+        $query=" SELECT * FROM stock_batches
+        WHERE status=:status";
+        $statement=$this->pdo->prepare($query);
+        $statement->execute(['stutus'=>$status]);
+        $line=$statement->fetchAll(PDO::FETCH_CLASS, StockBatch::class);
+
+        return $line;
+    
+    }
+
 
 }
