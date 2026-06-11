@@ -71,9 +71,17 @@ class StockBatchRepository
         $statement->execute();
         $batches = $statement->fetchAll(PDO::FETCH_CLASS, StockBatch::class);
 
-         return $batches ?: [];
+        return $batches ?: [];
     
         
+    }
+
+    public function updateQuantity(int $batchId, int $quantity): bool {
+        $query="UPDATE stock_batches
+                set quantity=:quantity
+                where id=:id ";
+        $statement=$this->pdo->prepare($query);
+        return $statement->execute(['quantity'=>$quantity,'id'=>$batchId]);        
     }
 
 
