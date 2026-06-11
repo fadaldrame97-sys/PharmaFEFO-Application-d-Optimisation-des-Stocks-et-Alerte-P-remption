@@ -13,3 +13,17 @@
           <?= htmlspecialchars($_SESSION['error']); ?>
     </div>
 <?php unset($_SESSION['error']); endif; ?>
+
+<div class="overflow-x-auto">
+    <table class="min-w-full border border-gray-300 rounded-lg shadow-sm">
+        <thead class="bg-gray-100">
+            <tr>
+                <th class="border px-4 py-2 text-left">ID Lot</th>
+                <th class="border px-4 py-2 text-left">Produit</th>
+                <th class="border px-4 py-2 text-left">Numéro de Lot</th>
+                <th class="border px-4 py-2 text-left">Quantité</th>
+                <th class="border px-4 py-2 text-left">Date de Péremption</th>
+                <th class="border px-4 py-2 text-left">Statut</th>
+                <th class="border px-4 py-2 text-left">Actions</th>
+            </tr>
+        </thead>
