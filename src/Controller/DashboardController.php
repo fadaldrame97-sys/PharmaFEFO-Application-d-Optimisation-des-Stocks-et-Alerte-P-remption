@@ -12,5 +12,10 @@ class DashboardController
         session_start(); 
     }
 
+    public function index(): void{
+        
+    }
+    
+
 
 }
