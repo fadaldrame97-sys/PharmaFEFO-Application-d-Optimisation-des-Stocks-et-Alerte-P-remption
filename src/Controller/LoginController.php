@@ -31,6 +31,13 @@ class LoginController{
                 'role'  => $user->getRole()
             ];
 
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $_SESSION['error'] = "Format d'email invalide.";
+            header('Location: /login');
+             exit;
+        }
+
+
             // Redirection vers le dashboard
             header('Location: /dashboard');
             exit;
