@@ -9,7 +9,7 @@ class ProductRepository
     }
 
     public function findById(int $id): ?Product
-{
+    {
     $query = "SELECT * FROM products WHERE id = :id";
     $statement = $this->pdo->prepare($query);
 
@@ -19,6 +19,20 @@ class ProductRepository
     $product = $statement->fetchObject(Product::class);
 
     return $product ?: null;
-}
+    }
+
+
+    public function findByCode(string $code): ?Product{
+    $query = "SELECT * FROM products WHERE code = :code";
+    $statement = $this->pdo->prepare($query);
+
+    if (!$statement) return null;
+
+    $statement->execute(['code' => $code]);
+    $product = $statement->fetchObject(Product::class);
+
+    return $product ?: null;
+    }
+
 
 }
