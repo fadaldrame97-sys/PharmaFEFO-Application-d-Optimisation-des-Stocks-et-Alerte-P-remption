@@ -40,7 +40,13 @@ class StockBatchRepository
                  AND quantity > 0
                  AND statut <> 'EXPIRED'
                  GROUP BY expiration_date ASC
-                 LIMIT 1;";
+                 LIMIT 1";
+        $statement=$this->pdo->prepare($query);
+
+        if(!$statement) return null;
+        return $statement->execute(['product_id'=>$productId]);
+        $table=$statement->fetchObject(StockBatch::class);
+        return $table ?: null;
     }
 
 
