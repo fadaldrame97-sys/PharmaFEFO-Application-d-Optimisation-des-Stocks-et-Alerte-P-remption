@@ -7,5 +7,10 @@ class LoginController{
         $this->userRepository=$userRepository;
         session_start();
    }
+
+
+    public function showLoginForm(): void{
+        require __DIR__ . '/.../templates/login.php';
+    }
 }
 
