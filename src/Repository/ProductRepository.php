@@ -34,5 +34,17 @@ class ProductRepository
     return $product ?: null;
     }
 
+    public function findAll(): array{
+
+    $query = "SELECT * FROM products ORDER BY name ASC";
+    $statement = $this->pdo->query($query);
+
+    $products = $statement->fetchAll(PDO::FETCH_CLASS, Product::class);
+
+    return $products ?: [];
+    }
+
+
+
 
 }
