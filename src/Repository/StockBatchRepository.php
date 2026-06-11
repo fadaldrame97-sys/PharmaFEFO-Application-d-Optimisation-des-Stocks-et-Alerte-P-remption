@@ -101,6 +101,35 @@ class StockBatchRepository
 
     }
 
+    public function findExpiredBatches(): array
+    {
+        $query = "
+           SELECT *
+           FROM stock_batches
+           WHERE status = 'EXPIRED'
+        ";
+
+        $statement = $this->pdo->prepare($query);
+
+        $statement->execute();
+
+        $data = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+        $batches = [];
+
+        foreach ($data as $row) {
+        $batches[] = new StockBatch(
+            $row['id'],
+            $row['product_id'],
+            $row['lot_number'],
+            $row['quantity'],
+            new DateTime($row['expiration_date']),
+            $row['status']
+        );
+       }
+
+    return $batches;
+    }
 
 
 
