@@ -34,7 +34,14 @@ class StockBatchRepository
         return $batch ?: null; 
 
     }
-    public function getNextExpiringBatch(int $productId){}
+    public function getNextExpiringBatch(int $productId){
+        $query=" SELECT * FROM stock_batches
+                 WHERE product_id=:product
+                 AND quantity > 0
+                 AND statut <> 'EXPIRED'
+                 GROUP BY expiration_date ASC
+                 LIMIT 1;";
+    }
 
 
 }
