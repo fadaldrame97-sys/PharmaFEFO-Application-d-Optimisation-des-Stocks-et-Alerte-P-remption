@@ -16,13 +16,13 @@ class StockController
         session_start();
     }
 
-     public function dispenseProduct(int $productId): void
+     public function dispenseProduct(int $productId, int $quantity = 1): void
     {
         if (!isset($_SESSION['user'])) {
             header('Location: /login');
             exit;
         }
-               $batch = $this->stockBatchRepository->findBatchByFEFO($productId);
+               $batch = $this->stockBatchRepository->getNextExpiringBatch($productId);
 
         if ($batch) {
             $newQuantity = $batch->getQuantity() - 1;

@@ -40,20 +40,19 @@ class StockBatchRepository
         return $batch ?: null; 
 
     }
-    public function getNextExpiringBatch(int $productId){
-        $query=" SELECT * FROM stock_batches
-                 WHERE product_id = :product_id
-                 AND quantity > 0
-                 AND status <> 'EXPIRED'
-                 ORDER BY expiration_date ASC
-                 LIMIT 1";
-        $statement=$this->pdo->prepare($query);
-
-        if(!$statement) return null;
-        return $statement->execute(['product_id'=>$productId]);
-        $table=$statement->fetchObject(StockBatch::class);
-        return $table ?: null;
+    public function getNextExpiringBatch(int $productId): ?StockBatch {
+        $query = "SELECT * FROM stock_batches
+              WHERE product_id = :product_id
+              AND quantity > 0
+              AND status <> 'EXPIRED'
+              ORDER BY expiration_date ASC
+              LIMIT 1";
+        $statement = $this->pdo->prepare($query);
+        $statement->execute(['product_id' => $productId]);
+        $batch = $statement->fetchObject(StockBatch::class);
+        return $batch ?: null;
     }
+
 
     public function findByStatus(BatchStatus $status): array{
         $query=" SELECT * FROM stock_batches
