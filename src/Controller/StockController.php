@@ -86,7 +86,7 @@ class StockController
     }
 
 
-    public function scanEntry(): void
+   public function scanEntry(): void
 {
     if (!isset($_SESSION['user'])) {
         header('Location: /login');
@@ -100,12 +100,21 @@ class StockController
     }
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $productId = $_POST['product_id'];
+        $productId = (int) $_POST['product_id'];
         $lotNumber = $_POST['lot_number'];
-        $quantity = $_POST['quantity'];
+        $quantity = (int) $_POST['quantity'];
         $expirationDate = new DateTime($_POST['expiration_date']);
 
-        $batch = new StockBatch($productId, $lotNumber, $quantity, $expirationDate);
+        // Création du lot avec statut par défaut
+        $batch = new StockBatch(
+            0, // id fictif, auto-généré par la base
+            $productId,
+            $lotNumber,
+            $quantity,
+            $expirationDate,
+            'AVAILABLE'
+        );
+
         $this->stockBatchRepository->create($batch);
 
         $_SESSION['success'] = "Lot enregistré avec succès.";
@@ -114,7 +123,7 @@ class StockController
     }
 
     require __DIR__ . '/../templates/stock/scan.php';
-    }
+}
 
 
 
