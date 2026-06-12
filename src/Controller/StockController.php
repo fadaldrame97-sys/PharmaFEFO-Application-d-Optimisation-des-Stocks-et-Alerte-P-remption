@@ -106,16 +106,15 @@ class StockController
         $expirationDate = new DateTime($_POST['expiration_date']);
 
         // Création du lot avec statut par défaut
-        $batch = new StockBatch(
-            0, // id fictif, auto-généré par la base
-            $productId,
-            $lotNumber,
-            $quantity,
-            $expirationDate,
-            'AVAILABLE'
-        );
+     $batch = new StockBatch(
+       $productId,
+       $lotNumber,
+       $quantity,
+       $expirationDate
+      );
 
-        $this->stockBatchRepository->create($batch);
+      $this->stockBatchRepository->create($batch);
+
 
         $_SESSION['success'] = "Lot enregistré avec succès.";
         header('Location: /stock');
