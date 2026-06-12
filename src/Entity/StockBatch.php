@@ -1,39 +1,42 @@
 <?php
+// src/Entity/StockBatch.php
+namespace PharmaFEFO\Entity;
 
-declare(strict_types=1);
+use DateTime;
+use PharmaFEFO\Enum\BatchStatus;
 
-class StockBatch
-{
-    private int $id;
+class StockBatch {
+    private ?int $id = null;
     private int $productId;
     private string $lotNumber;
     private int $quantity;
     private DateTime $expirationDate;
-    private string $status;
+    private BatchStatus $status;
 
-    public function __construct(
-        int $id,
-        int $productId,
-        string $lotNumber,
-        int $quantity,
-        DateTime $expirationDate,
-        string $status
-    ) {
-        $this->id = $id;
-        $this->productId = $productId;
+    // Getters ou Setters simples
+    public function getId(): ?int { return $this->id; }
+    
+    public function getLotNumber(): string { return $this->lotNumber; }
+    public function setLotNumber(string $lotNumber): self {
         $this->lotNumber = $lotNumber;
-        $this->quantity = $quantity;
-        $this->expirationDate = $expirationDate;
-        $this->status = $status;
+        return $this;
     }
 
-    public function getId(): int { return $this->id; }
-    public function getProductId(): int { return $this->productId; }
-    public function getLotNumber(): string { return $this->lotNumber; }
     public function getQuantity(): int { return $this->quantity; }
-    public function getExpirationDate(): DateTime { return $this->expirationDate; }
-    public function getStatus(): string { return $this->status; }
+    public function setQuantity(int $quantity): self {
+        $this->quantity = $quantity;
+        return $this;
+    }
 
-    public function setQuantity(int $quantity): void { $this->quantity = $quantity; }
-    public function setStatus(string $status): void { $this->status = $status; }
+    public function getExpirationDate(): DateTime { return $this->expirationDate; }
+    public function setExpirationDate(DateTime $expirationDate): self {
+        $this->expirationDate = $expirationDate;
+        return $this;
+    }
+
+    public function getStatus(): BatchStatus { return $this->status; }
+    public function setStatus(BatchStatus $status): self {
+        $this->status = $status;
+        return $this;
+    }
 }

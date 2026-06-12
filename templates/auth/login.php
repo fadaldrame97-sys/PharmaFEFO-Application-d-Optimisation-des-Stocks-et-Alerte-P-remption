@@ -25,7 +25,7 @@
             <?php unset($_SESSION['success']); ?>
         <?php endif; ?>
 
-        <form action="index.php?action=doLogin" method="post" class="space-y-4">
+        <form action="index.php?action=login" method="post" class="space-y-4">
             <div>
                 <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
                 <input type="email" id="email" name="email" required

@@ -1,24 +1,26 @@
 <?php
+// config/database.php
 
-declare(strict_types=1);
+class Database {
+    private static $connection = null;
 
-class Database
-{
-    private static ?PDO $pdo = null;
+    public static function getConnection() {
+        if (self::$connection === null) {
+            try {
+                $host = 'localhost';
+                $dbname = 'pharmafefo';
+                $username = 'root';
+                $password = ''; // khawi f-XAMPP dima
 
-    public static function getConnection(): PDO
-    {
-        if (self::$pdo === null) {
-            self::$pdo = new PDO(
-                'mysql:host=localhost;dbname=PharmaFEFO;charset=utf8mb4',
-                'root',
-                '',
-                [
-                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                ]
-            );
+                self::$connection = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
+                
+                // L-Ligne 19 l-shanti:
+                self::$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                
+            } catch (PDOException $e) {
+                die("Erreur de connexion : " . $e->getMessage());
+            }
         }
-        return self::$pdo;
+        return self::$connection;
     }
 }
