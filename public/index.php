@@ -1,36 +1,55 @@
 <?php
+
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../src/Controller/StockController.php';
+require_once __DIR__ . '/../src/Controller/LoginController.php'; // <-- ajout pour login
 require_once __DIR__ . '/../src/Repository/StockBatchRepository.php';
 require_once __DIR__ . '/../src/Repository/ProductRepository.php';
 
-$uri = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
-
 $stockRepo = new StockBatchRepository();
 $productRepo = new ProductRepository();
-$controller = new StockController($stockRepo, $productRepo);
+$stockController = new StockController($stockRepo, $productRepo);
 
-switch ($uri) {
+// Exemple : si tu as un UserRepository pour gérer les comptes
+// $userRepo = new UserRepository();
+// $loginController = new LoginController($userRepo);
+
+$action = $_GET['action'] ?? '';
+
+switch ($action) {
     case 'stock':
-        $controller->index();
+        $stockController->index();
         break;
-    case 'stock/scan':
-        $controller->scanEntry();
+
+    case 'scan':
+        $stockController->scanEntry();
         break;
-    case 'stock/reception':
-        $controller->receptionForm();
+
+    case 'reception':
+        $stockController->receptionForm();
         break;
-    case 'stock/expire':
+
+    case 'expire':
         if (isset($_GET['batch'])) {
-            $controller->markExpired((int)$_GET['batch']);
+            $stockController->markExpired((int) $_GET['batch']);
         }
         break;
-    case 'stock/dispense':
+
+    case 'dispense':
         if (isset($_GET['product'])) {
-            $controller->dispenseProduct((int)$_GET['product']);
+            $stockController->dispenseProduct((int) $_GET['product']);
         }
         break;
+
+    case 'login': // <-- nouvelle route
+        // $loginController->showLoginForm();
+        require __DIR__ . '/../templates/Autentification/login.php';
+        break;
+
+    case 'doLogin': // <-- soumission du formulaire
+        // $loginController->login();
+        break;
+
     default:
         echo "404 - Page non trouvée";
 }
-
