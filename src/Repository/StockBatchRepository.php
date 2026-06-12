@@ -122,16 +122,20 @@ class StockBatchRepository
 
         $batches = [];
 
-        foreach ($data as $row) {
-        $batches[] = new StockBatch(
-            $row['id'],
-            $row['product_id'],
-            $row['lot_number'],
-            $row['quantity'],
-            new DateTime($row['expiration_date']),
-            $row['status']
-        );
-       }
+       foreach ($data as $row) {
+    $expirationDate = !empty($row['expiration_date'])
+        ? new DateTime($row['expiration_date'])
+        : new DateTime(); // valeur par défaut si vide
+
+    $batches[] = new StockBatch(
+        (int)$row['product_id'],
+        $row['lot_number'],
+        (int)$row['quantity'],
+        $expirationDate,
+        $row['status']
+    );
+}
+
 
     return $batches;
     }
