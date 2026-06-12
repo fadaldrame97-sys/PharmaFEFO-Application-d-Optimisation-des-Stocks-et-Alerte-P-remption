@@ -29,7 +29,7 @@ class LoginController
 
         $user = $this->userRepository->findByEmail($email);
 
-        if ($user && password_verify($password, $user->getPassword())) {
+     if ($user && $password === $user->getPassword()) {
             $_SESSION['user'] = [
                 'id'    => $user->getId(),
                 'email' => $user->getEmail(),
