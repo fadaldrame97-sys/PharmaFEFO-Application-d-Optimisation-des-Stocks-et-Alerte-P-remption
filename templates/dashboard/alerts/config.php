@@ -26,6 +26,7 @@ $config = $_SESSION['alert_config'] ?? [
 ?>
 
 <form method="post" action="index.php?action=alerts" class="space-y-6 max-w-lg">
+    <?= Csrf::getTokenField(); ?>
 
     <div>
         <label class="block font-semibold mb-2">Seuil CRITICAL (Rouge)</label>

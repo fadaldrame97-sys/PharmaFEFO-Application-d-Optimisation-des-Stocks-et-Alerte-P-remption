@@ -1,0 +1,13 @@
+# Environment files (contain secrets)
+.env
+
+# IDE
+.idea/
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Debug/test files that should not be deployed
+test_db.php

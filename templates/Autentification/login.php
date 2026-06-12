@@ -26,6 +26,7 @@
         <?php endif; ?>
 
         <form action="index.php?action=doLogin" method="post" class="space-y-4">
+            <?= Csrf::getTokenField(); ?>
             <div>
                 <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
                 <input type="email" id="email" name="email" required

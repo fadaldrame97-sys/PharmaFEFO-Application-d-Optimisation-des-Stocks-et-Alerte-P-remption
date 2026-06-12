@@ -1,6 +1,16 @@
 <?php
 
-session_start();
+require_once __DIR__ . '/../src/Security/Session.php';
+require_once __DIR__ . '/../src/Security/Headers.php';
+require_once __DIR__ . '/../src/Security/Csrf.php';
+
+Session::secureStart();
+Headers::send();
+
+if (getenv('APP_DEBUG') !== 'true') {
+    ini_set('display_errors', '0');
+    error_reporting(0);
+}
 
 require_once __DIR__ . '/../config/database.php';
 

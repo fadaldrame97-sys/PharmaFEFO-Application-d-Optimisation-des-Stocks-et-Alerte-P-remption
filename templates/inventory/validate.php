@@ -40,7 +40,8 @@
                 <td class="px-4 py-2 border"><?= htmlspecialchars($batch->getStatus()); ?></td>
                 <td class="px-4 py-2 border text-center">
                     <form method="post" action="index.php?action=inventory">
-                        <input type="hidden" name="batchId" value="<?= $batch->getId(); ?>">
+                        <?= Csrf::getTokenField(); ?>
+                        <input type="hidden" name="batchId" value="<?= (int) $batch->getId(); ?>">
                         <button type="submit" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">
                             Valider
                         </button>

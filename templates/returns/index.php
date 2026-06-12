@@ -41,13 +41,15 @@
                 <td class="px-4 py-2 border"><?= $return['date'] ?? ''; ?></td>
                 <td class="px-4 py-2 border text-center">
                     <form method="post" action="index.php?action=returnAccept" style="display:inline;">
-                        <input type="hidden" name="returnId" value="<?= $return['id'] ?? 0; ?>">
+                        <?= Csrf::getTokenField(); ?>
+                        <input type="hidden" name="returnId" value="<?= (int) ($return['id'] ?? 0); ?>">
                         <button type="submit" class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600">
                             Accepter
                         </button>
                     </form>
                     <form method="post" action="index.php?action=returnRefuse" style="display:inline;">
-                        <input type="hidden" name="returnId" value="<?= $return['id'] ?? 0; ?>">
+                        <?= Csrf::getTokenField(); ?>
+                        <input type="hidden" name="returnId" value="<?= (int) ($return['id'] ?? 0); ?>">
                         <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">
                             Refuser
                         </button>

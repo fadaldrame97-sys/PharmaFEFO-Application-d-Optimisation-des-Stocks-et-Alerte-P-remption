@@ -91,18 +91,47 @@ class StockController
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $productId = (int) ($_POST['product_id'] ?? 0);
-            $lotNumber = trim($_POST['lot_number'] ?? '');
-            $quantity = (int) ($_POST['quantity'] ?? 0);
-            $expirationDateStr = $_POST['expiration_date'] ?? '';
-
-            if ($productId <= 0 || $lotNumber === '' || $quantity <= 0 || $expirationDateStr === '') {
-                $_SESSION['error'] = "Tous les champs sont obligatoires.";
+            if (!Csrf::validateToken($_POST['csrf_token'] ?? null)) {
+                $_SESSION['error'] = "Jeton de securite invalide.";
                 header('Location: index.php?action=scan');
                 exit;
             }
 
-            $expirationDate = new DateTime($expirationDateStr);
+            $productId = filter_input(INPUT_POST, 'product_id', FILTER_VALIDATE_INT);
+            $lotNumber = trim($_POST['lot_number'] ?? '');
+            $quantity = filter_input(INPUT_POST, 'quantity', FILTER_VALIDATE_INT);
+            $expirationDateStr = $_POST['expiration_date'] ?? '';
+
+            if (!$productId || $productId <= 0) {
+                $_SESSION['error'] = "ID produit invalide.";
+                header('Location: index.php?action=scan');
+                exit;
+            }
+
+            if ($lotNumber === '' || strlen($lotNumber) > 100 || !preg_match('/^[a-zA-Z0-9\-_]+$/', $lotNumber)) {
+                $_SESSION['error'] = "Numero de lot invalide (alphanumerique, tirets et underscores uniquement).";
+                header('Location: index.php?action=scan');
+                exit;
+            }
+
+            if (!$quantity || $quantity <= 0) {
+                $_SESSION['error'] = "Quantite invalide.";
+                header('Location: index.php?action=scan');
+                exit;
+            }
+
+            if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $expirationDateStr)) {
+                $_SESSION['error'] = "Format de date invalide.";
+                header('Location: index.php?action=scan');
+                exit;
+            }
+
+            $expirationDate = DateTime::createFromFormat('Y-m-d', $expirationDateStr);
+            if (!$expirationDate) {
+                $_SESSION['error'] = "Date de peremption invalide.";
+                header('Location: index.php?action=scan');
+                exit;
+            }
 
             $batch = new StockBatch(
                 0,

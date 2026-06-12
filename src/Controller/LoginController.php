@@ -18,6 +18,17 @@ class LoginController
 
     public function login(): void
     {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: index.php?action=login');
+            exit;
+        }
+
+        if (!Csrf::validateToken($_POST['csrf_token'] ?? null)) {
+            $_SESSION['error'] = "Jeton de securite invalide. Veuillez reessayer.";
+            header('Location: index.php?action=login');
+            exit;
+        }
+
         $email = trim($_POST['email'] ?? '');
         $password = $_POST['password'] ?? '';
 
@@ -30,6 +41,8 @@ class LoginController
         $user = $this->userRepository->findByEmail($email);
 
         if ($user && password_verify($password, $user->getPassword())) {
+            Session::regenerate();
+
             $_SESSION['user'] = [
                 'id'    => $user->getId(),
                 'email' => $user->getEmail(),
@@ -60,6 +73,19 @@ class LoginController
 
     public function logout(): void
     {
+        $_SESSION = [];
+        if (ini_get('session.use_cookies')) {
+            $params = session_get_cookie_params();
+            setcookie(
+                session_name(),
+                '',
+                time() - 42000,
+                $params['path'],
+                $params['domain'],
+                $params['secure'],
+                $params['httponly']
+            );
+        }
         session_destroy();
         header('Location: index.php?action=login');
         exit;
