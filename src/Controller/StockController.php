@@ -17,12 +17,9 @@ class StockController
 
     public function index(): void
     {
-        if (!isset($_SESSION['user'])) {
-            header('Location: index.php?action=login');
-            exit;
-        }
+        AuthMiddleware::requireLogin();
 
-        $role = $_SESSION['user']['role'];
+        $role = AuthMiddleware::currentRole();
         $batches = $this->stockBatchRepository->findAll();
 
         if ($role === 'ADMIN' || $role === 'GESTIONNAIRE') {
@@ -38,10 +35,7 @@ class StockController
 
     public function dispenseProduct(int $productId): void
     {
-        if (!isset($_SESSION['user'])) {
-            header('Location: index.php?action=login');
-            exit;
-        }
+        AuthMiddleware::requireLogin();
 
         $quantity = isset($_POST['quantity']) ? (int) $_POST['quantity'] : 1;
         $batch = $this->stockBatchRepository->getNextExpiringBatch($productId);
@@ -65,10 +59,7 @@ class StockController
 
     public function markExpired(int $batchId): void
     {
-        if (!isset($_SESSION['user'])) {
-            header('Location: index.php?action=login');
-            exit;
-        }
+        AuthMiddleware::requireLogin();
 
         $this->stockBatchRepository->markAsExpired($batchId);
         $_SESSION['success'] = "Lot $batchId marque comme expire.";
@@ -78,17 +69,7 @@ class StockController
 
     public function scanEntry(): void
     {
-        if (!isset($_SESSION['user'])) {
-            header('Location: index.php?action=login');
-            exit;
-        }
-
-        $role = $_SESSION['user']['role'];
-        if ($role !== 'ADMIN' && $role !== 'GESTIONNAIRE' && $role !== 'PREPARATEUR') {
-            $_SESSION['error'] = "Acces interdit.";
-            header('Location: index.php?action=login');
-            exit;
-        }
+        AuthMiddleware::requireRole('ADMIN', 'GESTIONNAIRE', 'PREPARATEUR');
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $productId = (int) ($_POST['product_id'] ?? 0);
@@ -125,17 +106,7 @@ class StockController
 
     public function receptionForm(): void
     {
-        if (!isset($_SESSION['user'])) {
-            header('Location: index.php?action=login');
-            exit;
-        }
-
-        $role = $_SESSION['user']['role'];
-        if ($role !== 'GESTIONNAIRE' && $role !== 'PREPARATEUR') {
-            $_SESSION['error'] = "Acces interdit a la reception.";
-            header('Location: index.php?action=login');
-            exit;
-        }
+        AuthMiddleware::requireRole('GESTIONNAIRE', 'PREPARATEUR');
 
         require __DIR__ . '/../../templates/reception_de_commandes/index.php';
     }

@@ -13,11 +13,7 @@ class SecurityController
 
     public function index(): void
     {
-        if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'ADMIN') {
-            $_SESSION['error'] = "Acces reserve a l'administrateur.";
-            header('Location: index.php?action=login');
-            exit;
-        }
+        AuthMiddleware::requireRole('ADMIN');
 
         $users = $this->userRepository->findAll();
         require __DIR__ . '/../../templates/dashboard/admin/security.php';

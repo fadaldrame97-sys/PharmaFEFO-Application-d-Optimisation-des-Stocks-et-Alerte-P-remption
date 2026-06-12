@@ -6,11 +6,7 @@ class AlertController
 {
     public function configure(): void
     {
-        if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'PHARMACIEN') {
-            $_SESSION['error'] = "Acces non autorise.";
-            header('Location: index.php?action=login');
-            exit;
-        }
+        AuthMiddleware::requireRole('PHARMACIEN');
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $criticalDays = (int) ($_POST['critical_days'] ?? 30);

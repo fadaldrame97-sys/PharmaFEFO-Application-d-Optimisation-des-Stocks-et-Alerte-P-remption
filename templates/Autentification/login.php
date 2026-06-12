@@ -11,19 +11,7 @@
     <div class="w-full max-w-md bg-white rounded-lg shadow-md p-6">
         <h1 class="text-2xl font-bold text-center mb-6">Connexion</h1>
 
-        <?php if (!empty($_SESSION['error'])): ?>
-            <div class="bg-red-100 text-red-700 p-3 rounded mb-4">
-                <?= htmlspecialchars($_SESSION['error']); ?>
-            </div>
-            <?php unset($_SESSION['error']); ?>
-        <?php endif; ?>
-
-        <?php if (!empty($_SESSION['success'])): ?>
-            <div class="bg-green-100 text-green-700 p-3 rounded mb-4">
-                <?= htmlspecialchars($_SESSION['success']); ?>
-            </div>
-            <?php unset($_SESSION['success']); ?>
-        <?php endif; ?>
+        <?php include __DIR__ . '/../partials/flash_messages.php'; ?>
 
         <form action="index.php?action=doLogin" method="post" class="space-y-4">
             <div>

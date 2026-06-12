@@ -10,19 +10,7 @@ function getCriticityClass(DateTime $expiry): string {
 
 <h1 class="text-2xl font-bold mb-4">Tableau de bord PharmaFEFO</h1>
 
-<?php if (isset($_SESSION['success'])): ?>
-    <div class="bg-green-100 text-green-800 p-3 rounded mb-4">
-        <?= htmlspecialchars($_SESSION['success']); ?>
-    </div>
-    <?php unset($_SESSION['success']); ?>
-<?php endif; ?>
-
-<?php if (isset($_SESSION['error'])): ?>
-    <div class="bg-red-100 text-red-800 p-3 rounded mb-4">
-        <?= htmlspecialchars($_SESSION['error']); ?>
-    </div>
-    <?php unset($_SESSION['error']); ?>
-<?php endif; ?>
+<?php include __DIR__ . '/../partials/flash_messages.php'; ?>
 
 <h2 class="text-xl mb-2">Lots qui expirent bientot</h2>
 <?php if (!empty($expiringSoon)): ?>

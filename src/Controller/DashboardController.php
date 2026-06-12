@@ -13,17 +13,7 @@ class DashboardController
 
     public function index(): void
     {
-        if (!isset($_SESSION['user'])) {
-            header('Location: index.php?action=login');
-            exit;
-        }
-
-        $role = $_SESSION['user']['role'];
-        if ($role !== 'ADMIN' && $role !== 'PHARMACIEN') {
-            $_SESSION['error'] = "Acces interdit a cette vue.";
-            header('Location: index.php?action=login');
-            exit;
-        }
+        AuthMiddleware::requireRole('ADMIN', 'PHARMACIEN');
 
         $expiringSoon = $this->stockBatchRepository->findExpiringNextMonth();
         $expired      = $this->stockBatchRepository->findExpiredBatches();

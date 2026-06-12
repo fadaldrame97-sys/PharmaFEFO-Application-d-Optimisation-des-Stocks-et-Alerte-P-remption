@@ -2,15 +2,8 @@
 
 declare(strict_types=1);
 
-class UserRepository
+class UserRepository extends AbstractRepository
 {
-    private PDO $pdo;
-
-    public function __construct()
-    {
-        $this->pdo = Database::getConnection();
-    }
-
     private function hydrate(array $row): User
     {
         return new User(

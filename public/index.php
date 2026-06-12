@@ -15,6 +15,8 @@ require_once __DIR__ . '/../src/Entity/EtatStock.php';
 require_once __DIR__ . '/../src/Enum/BatchStatus.php';
 require_once __DIR__ . '/../src/Enum/Role.php';
 
+require_once __DIR__ . '/../src/Middleware/AuthMiddleware.php';
+require_once __DIR__ . '/../src/Repository/AbstractRepository.php';
 require_once __DIR__ . '/../src/Repository/UserRepository.php';
 require_once __DIR__ . '/../src/Repository/StockBatchRepository.php';
 require_once __DIR__ . '/../src/Repository/ProductRepository.php';

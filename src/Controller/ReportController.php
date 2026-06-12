@@ -13,11 +13,7 @@ class ReportController
 
     public function index(): void
     {
-        if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'ADMIN') {
-            $_SESSION['error'] = "Acces reserve a l'administrateur.";
-            header('Location: index.php?action=login');
-            exit;
-        }
+        AuthMiddleware::requireRole('ADMIN');
 
         $byCriticality = $this->stockBatchRepository->findByCriticality();
         $countByStatus = $this->stockBatchRepository->countByStatus();

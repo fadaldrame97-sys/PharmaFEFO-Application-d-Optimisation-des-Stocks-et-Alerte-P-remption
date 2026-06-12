@@ -6,11 +6,7 @@ class ReturnController
 {
     public function manage(): void
     {
-        if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'PHARMACIEN') {
-            $_SESSION['error'] = "Acces non autorise.";
-            header('Location: index.php?action=login');
-            exit;
-        }
+        AuthMiddleware::requireRole('PHARMACIEN');
 
         $returns = [];
         require __DIR__ . '/../../templates/returns/index.php';
@@ -18,11 +14,7 @@ class ReturnController
 
     public function accept(): void
     {
-        if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'PHARMACIEN') {
-            $_SESSION['error'] = "Acces non autorise.";
-            header('Location: index.php?action=login');
-            exit;
-        }
+        AuthMiddleware::requireRole('PHARMACIEN');
 
         $returnId = (int) ($_POST['returnId'] ?? 0);
         if ($returnId > 0) {
@@ -35,11 +27,7 @@ class ReturnController
 
     public function refuse(): void
     {
-        if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'PHARMACIEN') {
-            $_SESSION['error'] = "Acces non autorise.";
-            header('Location: index.php?action=login');
-            exit;
-        }
+        AuthMiddleware::requireRole('PHARMACIEN');
 
         $returnId = (int) ($_POST['returnId'] ?? 0);
         if ($returnId > 0) {
