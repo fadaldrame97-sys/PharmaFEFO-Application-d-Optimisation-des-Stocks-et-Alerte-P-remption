@@ -125,6 +125,24 @@ class StockController
 }
 
 
+public function receptionForm(): void
+{
+    if (!isset($_SESSION['user'])) {
+        header('Location: /login');
+        exit;
+    }
+
+    $role = $_SESSION['user']['role'];
+
+    if ($role !== 'GESTIONNAIRE' && $role !== 'PREPARATEUR') {
+        die("Accès interdit à la réception.");
+    }
+
+    require __DIR__ . '/../templates/reception/index.php';
+}
+
+
+
 
     }
 
