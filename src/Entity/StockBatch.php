@@ -1,6 +1,5 @@
 <?php
 
-declare(strict_types=1);
 class StockBatch {
     private int $id;
     private int $productId;
@@ -25,7 +24,6 @@ class StockBatch {
         $this->status = $status;
     }
 
-    // Getters
     public function getId(): int { return $this->id; }
     public function getProductId(): int { return $this->productId; }
     public function getLotNumber(): string { return $this->lotNumber; }

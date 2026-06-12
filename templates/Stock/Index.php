@@ -1,19 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Gestion des Stocks</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    
-</body>
-</html>
+<body class="bg-gray-100 p-6">
 
 <h1 class="text-2xl font-bold mb-6">Gestion des Stocks</h1>
 
-<table class="min-w-full border border-gray-300 rounded-lg shadow-sm">
+<table class="min-w-full border border-gray-300 rounded-lg shadow-sm bg-white">
     <thead class="bg-gray-200">
         <tr>
             <th class="px-4 py-2 border">ID Lot</th>
@@ -28,17 +24,19 @@
     <tbody>
         <?php if (!empty($batches)): ?>
             <?php foreach ($batches as $batch): ?>
-                <tr>
-                    <td class="px-4 py-2 border"><?= $batch->getId(); ?></td>
-                    <td class="px-4 py-2 border"><?= $batch->getProductId(); ?></td>
-                    <td class="px-4 py-2 border"><?= $batch->getLotNumber(); ?></td>
-                    <td class="px-4 py-2 border"><?= $batch->getQuantity(); ?></td>
-                    <td class="px-4 py-2 border"><?= $batch->getExpirationDate()->format('Y-m-d'); ?></td>
-                    <td class="px-4 py-2 border"><?= $batch->getStatus(); ?></td>
+                <tr class="hover:bg-gray-50">
+                    <td class="px-4 py-2 border"><?= htmlspecialchars($batch->getId()); ?></td>
+                    <td class="px-4 py-2 border"><?= htmlspecialchars($batch->getProductId()); ?></td>
+                    <td class="px-4 py-2 border"><?= htmlspecialchars($batch->getLotNumber()); ?></td>
+                    <td class="px-4 py-2 border"><?= htmlspecialchars($batch->getQuantity()); ?></td>
                     <td class="px-4 py-2 border">
-                        <a href="/stock/dispense?product=<?= $batch->getProductId(); ?>" 
+                        <?= htmlspecialchars($batch->getExpirationDate()->format('Y-m-d')); ?>
+                    </td>
+                    <td class="px-4 py-2 border"><?= htmlspecialchars($batch->getStatus()); ?></td>
+                    <td class="px-4 py-2 border">
+                        <a href="index.php?action=dispense&product=<?= $batch->getProductId(); ?>" 
                            class="text-blue-600 hover:underline">Dispense</a> |
-                        <a href="/stock/expire?batch=<?= $batch->getId(); ?>" 
+                        <a href="index.php?action=expire&batch=<?= $batch->getId(); ?>" 
                            class="text-red-600 hover:underline">Marquer expiré</a>
                     </td>
                 </tr>
@@ -52,5 +50,6 @@
         <?php endif; ?>
     </tbody>
 </table>
+
 </body>
 </html>

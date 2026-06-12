@@ -19,23 +19,24 @@ class StockBatchRepository
                                     'status'=>$stockBatch->getStatus()]);                   
         
     }
-     public function findAll(): array {
-        $stmt = $this->pdo->query("SELECT * FROM stock_batches");
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    public function findAll(): array {
+    $stmt = $this->pdo->query("SELECT * FROM stock_batches");
+    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        $batches = [];
-        foreach ($rows as $row) {
-            $batches[] = new StockBatch(
-                (int)$row['id'],
-                (int)$row['product_id'],
-                $row['lot_number'],
-                (int)$row['quantity'],
-                new DateTime($row['expiration_date']),
-                $row['status'] ?: 'AVAILABLE' // statut par défaut si vide
-            );
-        }
-        return $batches;
+    $batches = [];
+    foreach ($rows as $row) {
+        $batches[] = new StockBatch(
+            (int)$row['id'],
+            (int)$row['product_id'],
+            $row['lot_number'],
+            (int)$row['quantity'],
+            new DateTime($row['expiration_date']),
+            $row['status']
+        );
     }
+    return $batches;
+}
+
 
 
     public function findById(int $id): ?StockBatch{

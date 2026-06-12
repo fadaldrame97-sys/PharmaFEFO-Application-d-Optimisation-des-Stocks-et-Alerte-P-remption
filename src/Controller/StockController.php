@@ -55,29 +55,24 @@ class StockController
         exit;
     }
 
-     public function index(): void
-{
+public function index(): void {
     if (!isset($_SESSION['user'])) {
-        header('Location: /login');
+        header('Location: index.php?action=login');
         exit;
     }
 
-   
-
     $role = $_SESSION['user']['role'];
     $batches = $this->stockBatchRepository->findAll();
-    
 
     if ($role === 'ADMIN' || $role === 'GESTIONNAIRE') {
-        // Vue avec actions possibles (dispense, marquer expiré, etc.)
-        require __DIR__ . '/../templates/stock/index.php';
+        require __DIR__ . '/../../templates/stock/index.php';
     } elseif ($role === 'PHARMACIEN') {
-        // Vue lecture seule (juste consultation)
-        require __DIR__ . '/../templates/stock/read_only.php';
+        require __DIR__ . '/../../templates/stock/read_only.php';
     } else {
         die("Accès interdit.");
     }
 }
+
 
 
   public function scanEntry(): void
