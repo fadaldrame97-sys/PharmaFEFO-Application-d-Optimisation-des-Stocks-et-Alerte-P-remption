@@ -1,58 +1,56 @@
-<?php include __DIR__ . '/../layout/base.php'; ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    
+</body>
+</html>
 
 <h1 class="text-2xl font-bold mb-6">Gestion des Stocks</h1>
 
-<?php if (isset($_SESSION['success'])): ?>
-    <div class="bg-green-500 text-white p-3 rounded mb-4">
-        <?= htmlspecialchars($_SESSION['success']); ?>
-    </div>
-<?php unset($_SESSION['success']); endif; ?>
-
-<?php if (isset($_SESSION['error'])): ?>
-    <div class="bg-red-500 text-white p-3 rounded mb-4">
-          <?= htmlspecialchars($_SESSION['error']); ?>
-    </div>
-<?php unset($_SESSION['error']); endif; ?>
-
-<div class="overflow-x-auto">
-    <table class="min-w-full border border-gray-300 rounded-lg shadow-sm">
-        <thead class="bg-gray-100">
-            <tr>
-                <th class="border px-4 py-2 text-left">ID Lot</th>
-                <th class="border px-4 py-2 text-left">Produit</th>
-                <th class="border px-4 py-2 text-left">Numéro de Lot</th>
-                <th class="border px-4 py-2 text-left">Quantité</th>
-                <th class="border px-4 py-2 text-left">Date de Péremption</th>
-                <th class="border px-4 py-2 text-left">Statut</th>
-                <th class="border px-4 py-2 text-left">Actions</th>
-            </tr>
-        </thead>
-
-         <tbody>
-        <?php foreach ($batches as $batch): ?>
-            <tr class="hover:bg-gray-50">
-                <td class="border px-4 py-2"><?= $batch->getId(); ?></td>
-                <td class="border px-4 py-2"><?= $batch->getProductId(); ?></td>
-                <td class="border px-4 py-2"><?= $batch->getLotNumber(); ?></td>
-                <td class="border px-4 py-2"><?= $batch->getQuantity(); ?></td>
-                <td class="border px-4 py-2"><?= $batch->getExpirationDate()->format('Y-m-d'); ?></td>
-                <td class="border px-4 py-2">
-                     <?php if ($batch->getStatus() === 'EXPIRED'): ?>
-                    <span class="bg-red-500 text-white px-2 py-1 rounded">EXPIRÉ</span>
-                    <?php else: ?>
-                        <span class="bg-green-500 text-white px-2 py-1 rounded"><?= $batch->getStatus(); ?></span>
-                    <?php endif; ?>
-
+<table class="min-w-full border border-gray-300 rounded-lg shadow-sm">
+    <thead class="bg-gray-200">
+        <tr>
+            <th class="px-4 py-2 border">ID Lot</th>
+            <th class="px-4 py-2 border">Produit</th>
+            <th class="px-4 py-2 border">Numéro de Lot</th>
+            <th class="px-4 py-2 border">Quantité</th>
+            <th class="px-4 py-2 border">Date de Péremption</th>
+            <th class="px-4 py-2 border">Statut</th>
+            <th class="px-4 py-2 border">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php if (!empty($batches)): ?>
+            <?php foreach ($batches as $batch): ?>
+                <tr>
+                    <td class="px-4 py-2 border"><?= $batch->getId(); ?></td>
+                    <td class="px-4 py-2 border"><?= $batch->getProductId(); ?></td>
+                    <td class="px-4 py-2 border"><?= $batch->getLotNumber(); ?></td>
+                    <td class="px-4 py-2 border"><?= $batch->getQuantity(); ?></td>
+                    <td class="px-4 py-2 border"><?= $batch->getExpirationDate()->format('Y-m-d'); ?></td>
+                    <td class="px-4 py-2 border"><?= $batch->getStatus(); ?></td>
+                    <td class="px-4 py-2 border">
+                        <a href="/stock/dispense?product=<?= $batch->getProductId(); ?>" 
+                           class="text-blue-600 hover:underline">Dispense</a> |
+                        <a href="/stock/expire?batch=<?= $batch->getId(); ?>" 
+                           class="text-red-600 hover:underline">Marquer expiré</a>
                     </td>
-                <td class="border px-4 py-2">
-                    <a href="/stock/dispense?product=<?= $batch->getProductId(); ?>" 
-                       class="text-blue-600 hover:underline">Dispense</a> |
-                    <a href="/stock/expire?batch=<?= $batch->getId(); ?>" 
-                       class="text-red-600 hover:underline">Marquer expiré</a>
+                </tr>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <tr>
+                <td colspan="7" class="text-center py-4 text-gray-600">
+                    Aucun lot disponible
                 </td>
             </tr>
-
-            <?php endforeach; ?>
-        </tbody>
-    </table>
-</div>
+        <?php endif; ?>
+    </tbody>
+</table>
+</body>
+</html>

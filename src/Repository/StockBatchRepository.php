@@ -19,12 +19,23 @@ class StockBatchRepository
                                     'status'=>$stockBatch->getStatus()]);                   
         
     }
-    public function findAll(): array {
-      $query = "SELECT * FROM stock_batches ORDER BY expiration_date ASC";
-      $statement = $this->pdo->query($query);
-      return $statement->fetchAll(PDO::FETCH_CLASS, StockBatch::class) ?: [];
-    }
+     public function findAll(): array {
+        $stmt = $this->pdo->query("SELECT * FROM stock_batches");
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+        $batches = [];
+        foreach ($rows as $row) {
+            $batches[] = new StockBatch(
+                (int)$row['id'],
+                (int)$row['product_id'],
+                $row['lot_number'],
+                (int)$row['quantity'],
+                new DateTime($row['expiration_date']),
+                $row['status'] ?: 'AVAILABLE' // statut par défaut si vide
+            );
+        }
+        return $batches;
+    }
 
 
     public function findById(int $id): ?StockBatch{
@@ -107,38 +118,33 @@ class StockBatchRepository
     }
 
     public function findExpiredBatches(): array
-    {
-        $query = "
-           SELECT *
-           FROM stock_batches
-           WHERE status = 'EXPIRED'
-        ";
+{
+    $query = "SELECT * FROM stock_batches WHERE status = 'EXPIRED'";
+    $statement = $this->pdo->prepare($query);
+    $statement->execute();
 
-        $statement = $this->pdo->prepare($query);
+    $data = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-        $statement->execute();
+    $batches = [];
 
-        $data = $statement->fetchAll(PDO::FETCH_ASSOC);
+    foreach ($data as $row) {
+        $expirationDate = !empty($row['expiration_date'])
+            ? new DateTime($row['expiration_date'])
+            : new DateTime();
 
-        $batches = [];
-
-       foreach ($data as $row) {
-    $expirationDate = !empty($row['expiration_date'])
-        ? new DateTime($row['expiration_date'])
-        : new DateTime(); // valeur par défaut si vide
-
-    $batches[] = new StockBatch(
-        (int)$row['product_id'],
-        $row['lot_number'],
-        (int)$row['quantity'],
-        $expirationDate,
-        $row['status']
-    );
-}
-
+        $batches[] = new StockBatch(
+            (int)$row['id'],              // <-- ajouter l'ID
+            (int)$row['product_id'],
+            $row['lot_number'],
+            (int)$row['quantity'],
+            $expirationDate,
+            $row['status']
+        );
+    }
 
     return $batches;
-    }
+}
+
 
     public function findByCriticality(): array {
     $query = "SELECT *, 

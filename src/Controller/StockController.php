@@ -56,37 +56,31 @@ class StockController
     }
 
      public function index(): void
-    {
-        if (!isset($_SESSION['user'])) {
-            header('Location: /login');
-            exit;
-        }
-
-        $batches = $this->stockBatchRepository->findAll();
-        require __DIR__ . '/../templates/stock/index.php';
-
-    
-
-    
+{
     if (!isset($_SESSION['user'])) {
         header('Location: /login');
         exit;
     }
 
+   
+
     $role = $_SESSION['user']['role'];
     $batches = $this->stockBatchRepository->findAll();
+    
 
     if ($role === 'ADMIN' || $role === 'GESTIONNAIRE') {
-        require __DIR__ . '/../templates/stock/index.php'; // Vue avec actions
+        // Vue avec actions possibles (dispense, marquer expiré, etc.)
+        require __DIR__ . '/../templates/stock/index.php';
     } elseif ($role === 'PHARMACIEN') {
-        require __DIR__ . '/../templates/stock/read_only.php'; // Vue lecture seule
+        // Vue lecture seule (juste consultation)
+        require __DIR__ . '/../templates/stock/read_only.php';
     } else {
         die("Accès interdit.");
     }
-    }
+}
 
 
-   public function scanEntry(): void
+  public function scanEntry(): void
 {
     if (!isset($_SESSION['user'])) {
         header('Location: /login');
@@ -105,23 +99,24 @@ class StockController
         $quantity = (int) $_POST['quantity'];
         $expirationDate = new DateTime($_POST['expiration_date']);
 
-        // Création du lot avec statut par défaut
-     $batch = new StockBatch(
-       $productId,
-       $lotNumber,
-       $quantity,
-       $expirationDate
-      );
+        // Création du lot avec id fictif et statut par défaut
+        $batch = new StockBatch(
+            0,                  // id fictif (sera ignoré par la DB auto-incrément)
+            $productId,
+            $lotNumber,
+            $quantity,
+            $expirationDate,
+            'AVAILABLE'         // statut par défaut
+        );
 
-      $this->stockBatchRepository->create($batch);
-
+        $this->stockBatchRepository->create($batch);
 
         $_SESSION['success'] = "Lot enregistré avec succès.";
-        header('Location: /stock');
+        header('Location: /Stock');
         exit;
     }
 
-    require __DIR__ . '/../templates/stock/scan.php';
+    require __DIR__ . '/../templates/Stock/scan.php';
 }
 
 
@@ -140,6 +135,8 @@ public function receptionForm(): void
 
     require __DIR__ . '/../templates/reception/index.php';
 }
+
+
 
 
 
