@@ -25,7 +25,7 @@ class StockController
         $role = $_SESSION['user']['role'];
         $batches = $this->stockBatchRepository->findAll();
 
-        if ($role === 'ADMIN' || $role === 'GESTIONNAIRE') {
+        if ($role === 'ADMIN' || $role === 'PREPARATEUR') {
             require __DIR__ . '/../../templates/Stock/Index.php';
         } elseif ($role === 'PHARMACIEN') {
             require __DIR__ . '/../../templates/Stock/read_only.php';
@@ -84,7 +84,7 @@ class StockController
         }
 
         $role = $_SESSION['user']['role'];
-        if ($role !== 'ADMIN' && $role !== 'GESTIONNAIRE' && $role !== 'PREPARATEUR') {
+        if ($role !== 'ADMIN' && $role !== 'PREPARATEUR') {
             $_SESSION['error'] = "Acces interdit.";
             header('Location: index.php?action=login');
             exit;
@@ -131,7 +131,7 @@ class StockController
         }
 
         $role = $_SESSION['user']['role'];
-        if ($role !== 'GESTIONNAIRE' && $role !== 'PREPARATEUR') {
+        if ($role !== 'PREPARATEUR') {
             $_SESSION['error'] = "Acces interdit a la reception.";
             header('Location: index.php?action=login');
             exit;
