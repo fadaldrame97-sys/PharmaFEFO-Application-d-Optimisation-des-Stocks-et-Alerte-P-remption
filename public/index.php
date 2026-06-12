@@ -1,8 +1,8 @@
 <?php
-require_once __DIR__ . '/config/database.php';
-require_once __DIR__ . '/src/StockBatchRepository.php';
-require_once __DIR__ . '/src/ProductRepository.php';
-require_once __DIR__ . '/src/StockController.php';
+require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../src/Controller/StockController.php';
+require_once __DIR__ . '/../src/Repository/StockBatchRepository.php';
+require_once __DIR__ . '/../src/Repository/ProductRepository.php';
 
 $uri = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
 
@@ -11,21 +11,21 @@ $productRepo = new ProductRepository();
 $controller = new StockController($stockRepo, $productRepo);
 
 switch ($uri) {
-    case 'PharmaFEFO-Application-d-Optimisation-des-Stocks-et-Alerte-P-remption/stock':
+    case 'stock':
         $controller->index();
         break;
-    case 'PharmaFEFO-Application-d-Optimisation-des-Stocks-et-Alerte-P-remption/stock/scan':
+    case 'stock/scan':
         $controller->scanEntry();
         break;
-    case 'PharmaFEFO-Application-d-Optimisation-des-Stocks-et-Alerte-P-remption/stock/reception':
+    case 'stock/reception':
         $controller->receptionForm();
         break;
-    case 'PharmaFEFO-Application-d-Optimisation-des-Stocks-et-Alerte-P-remption/stock/expire':
+    case 'stock/expire':
         if (isset($_GET['batch'])) {
             $controller->markExpired((int)$_GET['batch']);
         }
         break;
-    case 'PharmaFEFO-Application-d-Optimisation-des-Stocks-et-Alerte-P-remption/stock/dispense':
+    case 'stock/dispense':
         if (isset($_GET['product'])) {
             $controller->dispenseProduct((int)$_GET['product']);
         }
@@ -33,3 +33,4 @@ switch ($uri) {
     default:
         echo "404 - Page non trouvée";
 }
+
