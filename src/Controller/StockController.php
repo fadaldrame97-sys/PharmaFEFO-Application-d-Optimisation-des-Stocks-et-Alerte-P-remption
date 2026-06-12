@@ -106,7 +106,7 @@ class StockController
         $expirationDate = new DateTime($_POST['expiration_date']);
 
         $batch = new StockBatch($productId, $lotNumber, $quantity, $expirationDate);
-        $this->stockBatchRepository->save($batch);
+        $this->stockBatchRepository->create($batch);
 
         $_SESSION['success'] = "Lot enregistré avec succès.";
         header('Location: /stock');
