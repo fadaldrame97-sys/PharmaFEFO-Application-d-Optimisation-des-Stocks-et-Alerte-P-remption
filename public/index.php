@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../src/Controller/StockController.php';
-require_once __DIR__ . '/../src/Controller/LoginController.php'; // <-- ajout pour login
+require_once __DIR__ . '/../src/Controller/LoginController.php';
 require_once __DIR__ . '/../src/Repository/StockBatchRepository.php';
 require_once __DIR__ . '/../src/Repository/ProductRepository.php';
 
@@ -10,11 +10,11 @@ $stockRepo = new StockBatchRepository();
 $productRepo = new ProductRepository();
 $stockController = new StockController($stockRepo, $productRepo);
 
-// Exemple : si tu as un UserRepository pour gérer les comptes
+// Exemple : si tu as un UserRepository
 // $userRepo = new UserRepository();
 // $loginController = new LoginController($userRepo);
 
-$action = $_GET['action'] ?? '';
+$action = $_GET['action'] ?? 'login'; // <-- login par défaut
 
 switch ($action) {
     case 'stock':
@@ -41,12 +41,11 @@ switch ($action) {
         }
         break;
 
-    case 'login': // <-- nouvelle route
-        // $loginController->showLoginForm();
+    case 'login':
         require __DIR__ . '/../templates/Autentification/login.php';
         break;
 
-    case 'doLogin': // <-- soumission du formulaire
+    case 'doLogin':
         // $loginController->login();
         break;
 
