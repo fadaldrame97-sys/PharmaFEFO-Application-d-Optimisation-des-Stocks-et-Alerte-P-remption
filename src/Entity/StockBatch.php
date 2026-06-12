@@ -1,6 +1,9 @@
 <?php
 
-class StockBatch {
+declare(strict_types=1);
+
+class StockBatch
+{
     private int $id;
     private int $productId;
     private string $lotNumber;
@@ -30,4 +33,7 @@ class StockBatch {
     public function getQuantity(): int { return $this->quantity; }
     public function getExpirationDate(): DateTime { return $this->expirationDate; }
     public function getStatus(): string { return $this->status; }
+
+    public function setQuantity(int $quantity): void { $this->quantity = $quantity; }
+    public function setStatus(string $status): void { $this->status = $status; }
 }

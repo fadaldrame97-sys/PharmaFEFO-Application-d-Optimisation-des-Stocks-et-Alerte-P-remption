@@ -1,9 +1,12 @@
 <?php
 
-enum BatchStatus
+declare(strict_types=1);
+
+enum BatchStatus: string
 {
-    case OK;
-    case WARNING;
-    case CRITICAL;
-    case EXPIRED;
+    case OK = 'OK';
+    case WARNING = 'WARNING';
+    case CRITICAL = 'CRITICAL';
+    case EXPIRED = 'EXPIRED';
+    case AVAILABLE = 'AVAILABLE';
 }
