@@ -27,7 +27,14 @@ class LoginController
             exit;
         }
 
-        $user = $this->userRepository->findByEmail($email);
+        try {
+            $user = $this->userRepository->findByEmail($email);
+        } catch (RuntimeException $e) {
+            error_log('LoginController::login error: ' . $e->getMessage());
+            $_SESSION['error'] = "Erreur interne lors de l'authentification. Veuillez reessayer.";
+            header('Location: index.php?action=login');
+            exit;
+        }
 
         if ($user && password_verify($password, $user->getPassword())) {
             $_SESSION['user'] = [

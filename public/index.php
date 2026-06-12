@@ -1,5 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
+error_reporting(E_ALL);
+ini_set('display_errors', '0');
+ini_set('log_errors', '1');
+
+set_exception_handler(function (Throwable $e): void {
+    error_log('Uncaught exception: ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine());
+    http_response_code(500);
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+    $_SESSION['error'] = "Une erreur interne est survenue. Veuillez reessayer plus tard.";
+    header('Location: index.php?action=login');
+    exit;
+});
+
 session_start();
 
 require_once __DIR__ . '/../config/database.php';
@@ -32,19 +49,26 @@ require_once __DIR__ . '/../src/Controller/DatabaseController.php';
 require_once __DIR__ . '/../src/Controller/ReportController.php';
 require_once __DIR__ . '/../src/Controller/SecurityController.php';
 
-$userRepo   = new UserRepository();
-$stockRepo  = new StockBatchRepository();
-$productRepo = new ProductRepository();
+try {
+    $userRepo    = new UserRepository();
+    $stockRepo   = new StockBatchRepository();
+    $productRepo = new ProductRepository();
 
-$loginController     = new LoginController($userRepo);
-$stockController     = new StockController($stockRepo, $productRepo);
-$dashboardController = new DashboardController($stockRepo);
-$alertController     = new AlertController();
-$inventoryController = new InventoryController($stockRepo);
-$returnController    = new ReturnController();
-$databaseController  = new DatabaseController();
-$reportController    = new ReportController($stockRepo);
-$securityController  = new SecurityController($userRepo);
+    $loginController     = new LoginController($userRepo);
+    $stockController     = new StockController($stockRepo, $productRepo);
+    $dashboardController = new DashboardController($stockRepo);
+    $alertController     = new AlertController();
+    $inventoryController = new InventoryController($stockRepo);
+    $returnController    = new ReturnController();
+    $databaseController  = new DatabaseController();
+    $reportController    = new ReportController($stockRepo);
+    $securityController  = new SecurityController($userRepo);
+} catch (RuntimeException $e) {
+    error_log('Application bootstrap failed: ' . $e->getMessage());
+    http_response_code(503);
+    echo "Service temporairement indisponible. Veuillez reessayer plus tard.";
+    exit;
+}
 
 $action = $_GET['action'] ?? 'login';
 
@@ -78,18 +102,22 @@ switch ($action) {
         break;
 
     case 'expire':
-        if (isset($_GET['batch'])) {
-            $stockController->markExpired((int) $_GET['batch']);
-        } else {
+        $batchId = filter_input(INPUT_GET, 'batch', FILTER_VALIDATE_INT);
+        if (!$batchId) {
+            $_SESSION['error'] = "ID de lot invalide.";
             header('Location: index.php?action=stock');
+        } else {
+            $stockController->markExpired($batchId);
         }
         break;
 
     case 'dispense':
-        if (isset($_GET['product'])) {
-            $stockController->dispenseProduct((int) $_GET['product']);
-        } else {
+        $productId = filter_input(INPUT_GET, 'product', FILTER_VALIDATE_INT);
+        if (!$productId) {
+            $_SESSION['error'] = "ID de produit invalide.";
             header('Location: index.php?action=stock');
+        } else {
+            $stockController->dispenseProduct($productId);
         }
         break;
 
@@ -126,6 +154,7 @@ switch ($action) {
         break;
 
     default:
-        echo "404 - Page non trouvee";
+        http_response_code(404);
+        echo "404 - Page non trouvee.";
         break;
 }

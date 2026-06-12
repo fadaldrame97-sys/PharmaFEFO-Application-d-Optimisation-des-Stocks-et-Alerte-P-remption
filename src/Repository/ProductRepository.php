@@ -24,63 +24,111 @@ class ProductRepository
     public function findById(int $id): ?Product
     {
         $query = "SELECT * FROM products WHERE id = :id";
-        $statement = $this->pdo->prepare($query);
-        $statement->execute(['id' => $id]);
-        $row = $statement->fetch(PDO::FETCH_ASSOC);
 
-        return $row ? $this->hydrate($row) : null;
+        try {
+            $statement = $this->pdo->prepare($query);
+            $statement->execute(['id' => $id]);
+            $row = $statement->fetch(PDO::FETCH_ASSOC);
+
+            return $row ? $this->hydrate($row) : null;
+        } catch (PDOException $e) {
+            error_log('ProductRepository::findById failed: ' . $e->getMessage());
+            throw new RuntimeException('Failed to find product by ID: ' . $e->getMessage(), 0, $e);
+        }
     }
 
     public function findByCode(string $code): ?Product
     {
         $query = "SELECT * FROM products WHERE code = :code";
-        $statement = $this->pdo->prepare($query);
-        $statement->execute(['code' => $code]);
-        $row = $statement->fetch(PDO::FETCH_ASSOC);
 
-        return $row ? $this->hydrate($row) : null;
+        try {
+            $statement = $this->pdo->prepare($query);
+            $statement->execute(['code' => $code]);
+            $row = $statement->fetch(PDO::FETCH_ASSOC);
+
+            return $row ? $this->hydrate($row) : null;
+        } catch (PDOException $e) {
+            error_log('ProductRepository::findByCode failed: ' . $e->getMessage());
+            throw new RuntimeException('Failed to find product by code: ' . $e->getMessage(), 0, $e);
+        }
     }
 
     public function findAll(): array
     {
         $query = "SELECT * FROM products ORDER BY name ASC";
-        $statement = $this->pdo->query($query);
-        $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-        $products = [];
-        foreach ($rows as $row) {
-            $products[] = $this->hydrate($row);
+        try {
+            $statement = $this->pdo->query($query);
+            $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+            $products = [];
+            foreach ($rows as $row) {
+                $products[] = $this->hydrate($row);
+            }
+            return $products;
+        } catch (PDOException $e) {
+            error_log('ProductRepository::findAll failed: ' . $e->getMessage());
+            throw new RuntimeException('Failed to retrieve products: ' . $e->getMessage(), 0, $e);
         }
-        return $products;
     }
 
     public function create(Product $product): bool
     {
         $query = "INSERT INTO products (name, code, description) VALUES (:name, :code, :description)";
-        $statement = $this->pdo->prepare($query);
-        return $statement->execute([
-            'name'        => $product->getName(),
-            'code'        => $product->getCode(),
-            'description' => $product->getDescription(),
-        ]);
+
+        try {
+            $statement = $this->pdo->prepare($query);
+            return $statement->execute([
+                'name'        => $product->getName(),
+                'code'        => $product->getCode(),
+                'description' => $product->getDescription(),
+            ]);
+        } catch (PDOException $e) {
+            error_log('ProductRepository::create failed: ' . $e->getMessage());
+            throw new RuntimeException('Failed to create product: ' . $e->getMessage(), 0, $e);
+        }
     }
 
     public function update(Product $product): bool
     {
         $query = "UPDATE products SET name = :name, code = :code, description = :description WHERE id = :id";
-        $statement = $this->pdo->prepare($query);
-        return $statement->execute([
-            'id'          => $product->getId(),
-            'name'        => $product->getName(),
-            'code'        => $product->getCode(),
-            'description' => $product->getDescription(),
-        ]);
+
+        try {
+            $statement = $this->pdo->prepare($query);
+            $result = $statement->execute([
+                'id'          => $product->getId(),
+                'name'        => $product->getName(),
+                'code'        => $product->getCode(),
+                'description' => $product->getDescription(),
+            ]);
+
+            if ($result && $statement->rowCount() === 0) {
+                throw new RuntimeException("No product found with ID {$product->getId()}.");
+            }
+
+            return $result;
+        } catch (PDOException $e) {
+            error_log('ProductRepository::update failed: ' . $e->getMessage());
+            throw new RuntimeException('Failed to update product: ' . $e->getMessage(), 0, $e);
+        }
     }
 
     public function delete(int $id): bool
     {
         $query = "DELETE FROM products WHERE id = :id";
-        $statement = $this->pdo->prepare($query);
-        return $statement->execute(['id' => $id]);
+
+        try {
+            $statement = $this->pdo->prepare($query);
+            $result = $statement->execute(['id' => $id]);
+
+            if ($result && $statement->rowCount() === 0) {
+                throw new RuntimeException("No product found with ID $id to delete.");
+            }
+
+            return $result;
+        } catch (PDOException $e) {
+            error_log('ProductRepository::delete failed: ' . $e->getMessage());
+            throw new RuntimeException('Failed to delete product: ' . $e->getMessage(), 0, $e);
+        }
     }
 }

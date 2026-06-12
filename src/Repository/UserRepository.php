@@ -24,33 +24,51 @@ class UserRepository
     public function findByEmail(string $email): ?User
     {
         $query = "SELECT * FROM users WHERE email = :email";
-        $statement = $this->pdo->prepare($query);
-        $statement->execute(['email' => $email]);
-        $row = $statement->fetch(PDO::FETCH_ASSOC);
 
-        return $row ? $this->hydrate($row) : null;
+        try {
+            $statement = $this->pdo->prepare($query);
+            $statement->execute(['email' => $email]);
+            $row = $statement->fetch(PDO::FETCH_ASSOC);
+
+            return $row ? $this->hydrate($row) : null;
+        } catch (PDOException $e) {
+            error_log('UserRepository::findByEmail failed: ' . $e->getMessage());
+            throw new RuntimeException('Failed to find user by email: ' . $e->getMessage(), 0, $e);
+        }
     }
 
     public function findById(int $id): ?User
     {
         $query = "SELECT * FROM users WHERE id = :id";
-        $statement = $this->pdo->prepare($query);
-        $statement->execute(['id' => $id]);
-        $row = $statement->fetch(PDO::FETCH_ASSOC);
 
-        return $row ? $this->hydrate($row) : null;
+        try {
+            $statement = $this->pdo->prepare($query);
+            $statement->execute(['id' => $id]);
+            $row = $statement->fetch(PDO::FETCH_ASSOC);
+
+            return $row ? $this->hydrate($row) : null;
+        } catch (PDOException $e) {
+            error_log('UserRepository::findById failed: ' . $e->getMessage());
+            throw new RuntimeException('Failed to find user by ID: ' . $e->getMessage(), 0, $e);
+        }
     }
 
     public function findAll(): array
     {
         $query = "SELECT * FROM users ORDER BY email ASC";
-        $statement = $this->pdo->query($query);
-        $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-        $users = [];
-        foreach ($rows as $row) {
-            $users[] = $this->hydrate($row);
+        try {
+            $statement = $this->pdo->query($query);
+            $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+            $users = [];
+            foreach ($rows as $row) {
+                $users[] = $this->hydrate($row);
+            }
+            return $users;
+        } catch (PDOException $e) {
+            error_log('UserRepository::findAll failed: ' . $e->getMessage());
+            throw new RuntimeException('Failed to retrieve users: ' . $e->getMessage(), 0, $e);
         }
-        return $users;
     }
 }

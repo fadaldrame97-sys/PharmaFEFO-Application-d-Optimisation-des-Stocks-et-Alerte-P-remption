@@ -22,18 +22,30 @@ class InventoryController
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $batchId = (int) ($_POST['batchId'] ?? 0);
             if ($batchId > 0) {
-                $batch = $this->stockBatchRepository->findById($batchId);
-                if ($batch) {
-                    $_SESSION['success'] = "Lot #$batchId valide avec succes.";
-                } else {
-                    $_SESSION['error'] = "Lot introuvable.";
+                try {
+                    $batch = $this->stockBatchRepository->findById($batchId);
+                    if ($batch) {
+                        $_SESSION['success'] = "Lot #$batchId valide avec succes.";
+                    } else {
+                        $_SESSION['error'] = "Lot introuvable.";
+                    }
+                } catch (RuntimeException $e) {
+                    error_log('InventoryController::validate error: ' . $e->getMessage());
+                    $_SESSION['error'] = "Erreur lors de la validation du lot.";
                 }
             }
             header('Location: index.php?action=inventory');
             exit;
         }
 
-        $batches = $this->stockBatchRepository->findAll();
+        try {
+            $batches = $this->stockBatchRepository->findAll();
+        } catch (RuntimeException $e) {
+            error_log('InventoryController::validate error: ' . $e->getMessage());
+            $_SESSION['error'] = "Erreur lors du chargement de l'inventaire.";
+            $batches = [];
+        }
+
         require __DIR__ . '/../../templates/inventory/validate.php';
     }
 }

@@ -23,7 +23,14 @@ class StockController
         }
 
         $role = $_SESSION['user']['role'];
-        $batches = $this->stockBatchRepository->findAll();
+
+        try {
+            $batches = $this->stockBatchRepository->findAll();
+        } catch (RuntimeException $e) {
+            error_log('StockController::index error: ' . $e->getMessage());
+            $_SESSION['error'] = "Impossible de charger les lots.";
+            $batches = [];
+        }
 
         if ($role === 'ADMIN' || $role === 'GESTIONNAIRE') {
             require __DIR__ . '/../../templates/Stock/Index.php';
@@ -44,19 +51,29 @@ class StockController
         }
 
         $quantity = isset($_POST['quantity']) ? (int) $_POST['quantity'] : 1;
-        $batch = $this->stockBatchRepository->getNextExpiringBatch($productId);
 
-        if ($batch) {
+        try {
+            $batch = $this->stockBatchRepository->getNextExpiringBatch($productId);
+
+            if (!$batch) {
+                $_SESSION['error'] = "Aucun lot disponible pour ce produit.";
+                header('Location: index.php?action=stock');
+                exit;
+            }
+
             $newQuantity = $batch->getQuantity() - $quantity;
 
-            if ($newQuantity >= 0) {
-                $this->stockBatchRepository->updateQuantity($batch->getId(), $newQuantity);
-                $_SESSION['success'] = "Dispensation reussie : lot " . $batch->getLotNumber() . " decremente de $quantity.";
-            } else {
+            if ($newQuantity < 0) {
                 $_SESSION['error'] = "Stock insuffisant pour ce lot.";
+                header('Location: index.php?action=stock');
+                exit;
             }
-        } else {
-            $_SESSION['error'] = "Aucun lot disponible pour ce produit.";
+
+            $this->stockBatchRepository->updateQuantity($batch->getId(), $newQuantity);
+            $_SESSION['success'] = "Dispensation reussie : lot " . $batch->getLotNumber() . " decremente de $quantity.";
+        } catch (RuntimeException $e) {
+            error_log('StockController::dispenseProduct error: ' . $e->getMessage());
+            $_SESSION['error'] = "Erreur lors de la dispensation : " . $e->getMessage();
         }
 
         header('Location: index.php?action=stock');
@@ -70,8 +87,14 @@ class StockController
             exit;
         }
 
-        $this->stockBatchRepository->markAsExpired($batchId);
-        $_SESSION['success'] = "Lot $batchId marque comme expire.";
+        try {
+            $this->stockBatchRepository->markAsExpired($batchId);
+            $_SESSION['success'] = "Lot $batchId marque comme expire.";
+        } catch (RuntimeException $e) {
+            error_log('StockController::markExpired error: ' . $e->getMessage());
+            $_SESSION['error'] = "Erreur lors du marquage du lot : " . $e->getMessage();
+        }
+
         header('Location: index.php?action=stock');
         exit;
     }
@@ -91,31 +114,42 @@ class StockController
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $productId = (int) ($_POST['product_id'] ?? 0);
+            $productId = filter_input(INPUT_POST, 'product_id', FILTER_VALIDATE_INT);
             $lotNumber = trim($_POST['lot_number'] ?? '');
-            $quantity = (int) ($_POST['quantity'] ?? 0);
+            $quantity = filter_input(INPUT_POST, 'quantity', FILTER_VALIDATE_INT);
             $expirationDateStr = $_POST['expiration_date'] ?? '';
 
-            if ($productId <= 0 || $lotNumber === '' || $quantity <= 0 || $expirationDateStr === '') {
-                $_SESSION['error'] = "Tous les champs sont obligatoires.";
+            if (!$productId || $productId <= 0 || $lotNumber === '' || !$quantity || $quantity <= 0 || $expirationDateStr === '') {
+                $_SESSION['error'] = "Tous les champs sont obligatoires et doivent etre valides.";
                 header('Location: index.php?action=scan');
                 exit;
             }
 
-            $expirationDate = new DateTime($expirationDateStr);
+            try {
+                $expirationDate = new DateTime($expirationDateStr);
+            } catch (\Exception $e) {
+                $_SESSION['error'] = "Date d'expiration invalide.";
+                header('Location: index.php?action=scan');
+                exit;
+            }
 
-            $batch = new StockBatch(
-                0,
-                $productId,
-                $lotNumber,
-                $quantity,
-                $expirationDate,
-                'AVAILABLE'
-            );
+            try {
+                $batch = new StockBatch(
+                    0,
+                    $productId,
+                    $lotNumber,
+                    $quantity,
+                    $expirationDate,
+                    'AVAILABLE'
+                );
 
-            $this->stockBatchRepository->create($batch);
+                $this->stockBatchRepository->create($batch);
+                $_SESSION['success'] = "Lot enregistre avec succes.";
+            } catch (RuntimeException $e) {
+                error_log('StockController::scanEntry error: ' . $e->getMessage());
+                $_SESSION['error'] = "Erreur lors de l'enregistrement du lot : " . $e->getMessage();
+            }
 
-            $_SESSION['success'] = "Lot enregistre avec succes.";
             header('Location: index.php?action=stock');
             exit;
         }
